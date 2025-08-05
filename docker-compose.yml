@@ -1,0 +1,40 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - DB_NAME=bsrsdb
+      - DB_USER=bsrsuser
+      - DB_PASSWORD=bsrspass
+      - DB_HOST=db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: bsrsdb
+      POSTGRES_USER: bsrsuser
+      POSTGRES_PASSWORD: bsrspass
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+  
+  pgadmin:
+    image: dpage/pgadmin4
+    ports:
+      - "5050:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@bsrs.com
+      PGADMIN_DEFAULT_PASSWORD: admin123
+    depends_on:
+      - db
+
+
+volumes:
+  postgres_data:

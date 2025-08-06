@@ -15,30 +15,30 @@ def bank_transactions_view(request):
 
 def upload_transactions_view(request):
     message = ''
-    if request.method == 'POST' and request.FILES['file']:
+    if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
         if uploaded_file.name.endswith('.csv') or uploaded_file.name.endswith('.xlsx'):
             try:
-                # Read file directly from uploaded file (in-memory)
+                # Read file directly without saving
                 if uploaded_file.name.endswith('.csv'):
                     df = pd.read_csv(uploaded_file)
                 else:
                     df = pd.read_excel(uploaded_file)
 
-                # Check required columns
-                required_columns = {'date', 'description', 'amount', 'reference_number'}
+                # Required columns check
+                required_columns = {'company', 'date', 'description', 'amount', 'reference_number'}
                 if not all(col in df.columns for col in required_columns):
                     message = 'Missing required columns in file.'
                 else:
                     for _, row in df.iterrows():
                         BankTransaction.objects.create(
+                            company=row['company'],
                             date=row['date'],
                             description=row['description'],
                             amount=row['amount'],
                             reference_number=row['reference_number'],
-                            company_id=1,
-                            status='pending',
-                            source_file_id=1 
+                            invoice_no=row.get('invoice_no', ''),
+                            status='pending'
                         )
                     message = 'File uploaded and data saved successfully.'
 

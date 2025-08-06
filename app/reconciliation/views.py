@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from .models import BankTransaction
 import pandas as pd
-from django.core.files.storage import FileSystemStorage
 
 def bank_transactions_view(request):
     transactions = BankTransaction.objects.all()
@@ -13,16 +12,11 @@ def upload_transactions_view(request):
         uploaded_file = request.FILES['file']
         if uploaded_file.name.endswith('.csv') or uploaded_file.name.endswith('.xlsx'):
             try:
-                # Save uploaded file temporarily
-                fs = FileSystemStorage()
-                filename = fs.save(uploaded_file.name, uploaded_file)
-                file_path = fs.path(filename)
-
-                # Read file
+                # Read file directly from uploaded file (in-memory)
                 if uploaded_file.name.endswith('.csv'):
-                    df = pd.read_csv(file_path)
+                    df = pd.read_csv(uploaded_file)
                 else:
-                    df = pd.read_excel(file_path)
+                    df = pd.read_excel(uploaded_file)
 
                 # Check required columns
                 required_columns = {'date', 'description', 'amount', 'reference_number'}
@@ -40,8 +34,6 @@ def upload_transactions_view(request):
                             source_file_id=1 
                         )
                     message = 'File uploaded and data saved successfully.'
-
-                fs.delete(filename)
 
             except Exception as e:
                 message = f'Error processing file: {str(e)}'

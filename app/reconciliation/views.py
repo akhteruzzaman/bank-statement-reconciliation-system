@@ -1,10 +1,17 @@
 from django.shortcuts import render, redirect
 from .models import BankTransaction
 import pandas as pd
+from django.core.paginator import Paginator
 
 def bank_transactions_view(request):
-    transactions = BankTransaction.objects.all()
+    transactions_list = BankTransaction.objects.all().order_by('-id')  # Order by id descending
+    paginator = Paginator(transactions_list, 10)  # 10 per page
+
+    page_number = request.GET.get('page')
+    transactions = paginator.get_page(page_number)
+
     return render(request, 'reconciliation/bank_transactions.html', {'transactions': transactions})
+
 
 def upload_transactions_view(request):
     message = ''

@@ -1,11 +1,12 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Bank Transactions</title>
-</head>
-<body>
-    <h1>Bank Transactions</h1>
-    <table border="1" cellpadding="5" cellspacing="0">
+{% extends 'reconciliation/base.html' %}
+
+{% block title %}Bank Transactions{% endblock %}
+
+{% block content %}
+<h1>Bank Transactions</h1>
+
+<table class="table table-striped">
+    <thead>
         <tr>
             <th>ID</th>
             <th>Company</th>
@@ -19,7 +20,9 @@
             <th>Created At</th>
             <th>Updated At</th>
         </tr>
-        {% for txn in transactions %}
+    </thead>
+    <tbody>
+    {% for txn in transactions %}
         <tr>
             <td>{{ txn.id }}</td>
             <td>{{ txn.company.name }}</td>
@@ -33,9 +36,47 @@
             <td>{{ txn.created_at }}</td>
             <td>{{ txn.updated_at }}</td>
         </tr>
-        {% empty %}
+    {% empty %}
         <tr><td colspan="11">No transactions found.</td></tr>
-        {% endfor %}
-    </table>
-</body>
-</html>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- Pagination controls -->
+<nav aria-label="Page navigation">
+  <ul class="pagination">
+    {% if transactions.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ transactions.previous_page_number }}" aria-label="Previous">
+          <span aria-hidden="true">&laquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&laquo;</span>
+      </li>
+    {% endif %}
+
+    {% for num in transactions.paginator.page_range %}
+      {% if transactions.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+      {% elif num > transactions.number|add:'-3' and num < transactions.number|add:'3' %}
+        <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+      {% endif %}
+    {% endfor %}
+
+    {% if transactions.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ transactions.next_page_number }}" aria-label="Next">
+          <span aria-hidden="true">&raquo;</span>
+        </a>
+      </li>
+    {% else %}
+      <li class="page-item disabled">
+        <span class="page-link">&raquo;</span>
+      </li>
+    {% endif %}
+  </ul>
+</nav>
+
+{% endblock %}

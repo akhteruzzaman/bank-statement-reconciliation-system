@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Bank Transactions</title>
+</head>
+<body>
+    <h1>Bank Transactions</h1>
+    <table border="1" cellpadding="5" cellspacing="0">
+        <tr>
+            <th>ID</th>
+            <th>Company</th>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+            <th>Reference Number</th>
+            <th>Status</th>
+            <th>Source File</th>
+            <th>Matched Invoice</th>
+            <th>Created At</th>
+            <th>Updated At</th>
+        </tr>
+        {% for txn in transactions %}
+        <tr>
+            <td>{{ txn.id }}</td>
+            <td>{{ txn.company.name }}</td>
+            <td>{{ txn.date }}</td>
+            <td>{{ txn.description }}</td>
+            <td>{{ txn.amount }}</td>
+            <td>{{ txn.reference_number }}</td>
+            <td>{{ txn.status }}</td>
+            <td>{{ txn.source_file.file_name }}</td>
+            <td>{% if txn.matched_invoice %}{{ txn.matched_invoice.invoice_number }}{% endif %}</td>
+            <td>{{ txn.created_at }}</td>
+            <td>{{ txn.updated_at }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="11">No transactions found.</td></tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

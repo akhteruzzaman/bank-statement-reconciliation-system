@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class HelloConfig(AppConfig):
+class ReconciliationConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'hello'
+    name = 'reconciliation'

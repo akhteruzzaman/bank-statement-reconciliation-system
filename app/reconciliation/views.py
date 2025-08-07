@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from .models import BankTransaction
 import pandas as pd
 from django.core.paginator import Paginator
+from ml.predictor import predict_status
 
 def bank_transactions_view(request):
     transactions_list = BankTransaction.objects.all().order_by('-id')  # Order by id descending
@@ -13,7 +14,8 @@ def bank_transactions_view(request):
     return render(request, 'reconciliation/bank_transactions.html', {'transactions': transactions})
 
 
-def upload_transactions_view(request):
+def upload_transactions_view(request):   
+
     message = ''
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
@@ -31,6 +33,9 @@ def upload_transactions_view(request):
                     message = 'Missing required columns in file.'
                 else:
                     for _, row in df.iterrows():
+
+                        status = predict_status(row['amount'], row['date'], row['description'])
+
                         BankTransaction.objects.create(
                             company=row['company'],
                             date=row['date'],
@@ -38,7 +43,7 @@ def upload_transactions_view(request):
                             amount=row['amount'],
                             reference_number=row['reference_number'],
                             invoice_no=row.get('invoice_no', ''),
-                            status='pending'
+                            status=status
                         )
                     message = 'File uploaded and data saved successfully.'
 

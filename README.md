@@ -36,7 +36,7 @@ The file must contain the following columns:
 
 - **Backend**: Django, Python
 - **Database**: PostgreSQL
-- **Machine Learning**: Scikit-learn (pre-trained model)
+- **Machine Learning**: PyTorch
 - **Containerization**: Docker + Docker Compose
 
 ---

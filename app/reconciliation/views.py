@@ -15,7 +15,6 @@ def bank_transactions_view(request):
 
 
 def upload_transactions_view(request):   
-
     message = ''
     if request.method == 'POST' and request.FILES.get('file'):
         uploaded_file = request.FILES['file']
@@ -26,15 +25,24 @@ def upload_transactions_view(request):
                     df = pd.read_csv(uploaded_file)
                 else:
                     df = pd.read_excel(uploaded_file)
-
+                
+                # *** Add this line to replace NaN values with blank strings ***
+                df = df.fillna('')
+                
                 # Required columns check
                 required_columns = {'company', 'date', 'description', 'amount', 'reference_number'}
                 if not all(col in df.columns for col in required_columns):
                     message = 'Missing required columns in file.'
                 else:
                     for _, row in df.iterrows():
-
-                        status = predict_status(row['amount'], row['date'], row['description'])
+                        status = predict_status(
+                            row['company'],
+                            row['description'],
+                            row['amount'],
+                            row['reference_number'],
+                            row['invoice_no'],
+                            row['date']
+                        )
 
                         BankTransaction.objects.create(
                             company=row['company'],

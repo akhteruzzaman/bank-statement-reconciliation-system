@@ -51,5 +51,5 @@ docker-compose up --build
 docker exec -it bsrs-web-1 python manage.py migrate
 
 # Open app in browser
-[http://localhost:8000/](http://localhost:8000/bank_transactions/)
+http://localhost:8000/](http://localhost:8000/bank_transactions/
 http://localhost:8000/upload/

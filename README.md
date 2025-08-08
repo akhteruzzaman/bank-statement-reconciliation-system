@@ -23,12 +23,26 @@ The file must contain the following columns:
 - `transaction_date` (YYYY-MM-DD)
 - `description` (text)
 
+
+## 🧾 CSV Upload Format
+
+The file must contain the following columns:
+
+- `company` (text)
+- `description` (text)
+- `amount` (float)
+- `reference_number` (text)
+- `invoice_no` (text)
+- `date` (YYYY-MM-DD)
+- `status` (Matched / Unmatched)
+
 ### Example:
 
-| amount  | transaction_date | description              |
-|---------|------------------|--------------------------|
-| 500.00  | 2024-12-15       | Payment from Client A    |
-| -250.00 | 2025-01-10       | Office Rent January      |
+| company     | description              | amount  | reference_number | invoice_no | date       | status     |
+|-------------|--------------------------|---------|------------------|------------|------------|------------|
+| Client A    | Payment for services      | 500.00  | REF12345         | INV1001    | 2024-12-15 | Matched    |
+| Office Rent | January Rent Payment      | -250.00 | REF67890         | INV1002    | 2025-01-10 | Unmatched  |
+
 
 ---
 
